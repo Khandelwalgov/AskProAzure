@@ -32,7 +32,7 @@ export default function FileManager() {
     const form = new FormData();
     form.append("file", file);
     setUploading(true);
-    await fetch("http://localhost:5000/upload", {
+    await fetch("https://askpro.duckdns.org/upload", {
       method: "POST",
       credentials: "include",
       body: form
@@ -42,7 +42,7 @@ export default function FileManager() {
   };
 
   const handleDelete = async fn => {
-    await fetch("http://localhost:5000/delete-file", {
+    await fetch("https://askpro.duckdns.org/delete-file", {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },

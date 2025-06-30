@@ -21,7 +21,7 @@ function Sidebar() {
     if (!selectedFile) return;
     const formData = new FormData();
     formData.append("file", selectedFile);
-    const res = await fetch("http://localhost:5000/upload", {
+    const res = await fetch("https://askpro.duckdns.org/upload", {
       method: "POST",
       credentials: "include",
       body: formData,
@@ -33,7 +33,7 @@ function Sidebar() {
   };
 
   const handleDelete = async (filename) => {
-    const res = await fetch("http://localhost:5000/delete-file", {
+    const res = await fetch("https://askpro.duckdns.org/delete-file", {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -43,10 +43,11 @@ function Sidebar() {
   };
 
   const handleLogout = async () => {
-    await fetch("http://localhost:5000/logout", {
-      method: "POST",
-      credentials: "include",
-    });
+    await fetch("https://askpro.duckdns.org/logout", {
+  method: "POST",
+  credentials: "include"
+});
+localStorage.removeItem("uuid");
     window.location.href = "/login";
   };
 

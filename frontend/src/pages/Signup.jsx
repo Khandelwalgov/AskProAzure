@@ -22,6 +22,7 @@ export default function Signup() {
       });
       const data = await res.json();
       if (res.ok) {
+          localStorage.setItem("uuid", data.uuid); // ✅ set UUID
         navigate("/chat");
       } else {
         setError(data.error || "Signup failed.");
