@@ -5,3 +5,5 @@ instance
 testbed.py
 vectors
 .env
+temp
+__pycache__
