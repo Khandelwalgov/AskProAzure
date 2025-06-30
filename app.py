@@ -13,6 +13,8 @@ from azure.storage.blob import BlobServiceClient, ContentSettings
 from dotenv import load_dotenv
 import openai
 from openai import OpenAI, AzureOpenAI
+import logging
+
 
 
 load_dotenv()
@@ -58,6 +60,17 @@ app.config["SESSION_COOKIE_SECURE"] = True
 
 # --- CORS Setup for React Frontend ---
 CORS(app, supports_credentials=True)
+# Logging to stdout for systemd (Gunicorn compatible)
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s: %(message)s",
+    handlers=[
+        logging.StreamHandler(),  # Output to stdout (captured by systemd)
+        # Optional file logging
+        # logging.FileHandler("flask-debug.log") 
+    ]
+)
+logger = logging.getLogger(__name__)
 
 # --- DB Setup ---
 db = SQLAlchemy(app)
@@ -81,6 +94,13 @@ class File(db.Model):
 with app.app_context():
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
     db.create_all()
+    
+@app.before_request
+def log_request_info():
+    logger.info("⬅️ Incoming Request: %s %s", request.method, request.path)
+    logger.info("🔐 Cookies: %s", request.cookies)
+    logger.info("📦 Session: %s", dict(session))
+    logger.info("🧾 Headers: %s", dict(request.headers))
 
 # --- Helpers ---
 def allowed_file(filename, content_type):
