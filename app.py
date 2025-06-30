@@ -49,6 +49,7 @@ app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['SQLALCHEMY_DATABASE_URI'] =  os.getenv("SQLALCHEMY_URI")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['MAX_CONTENT_LENGTH'] = 20 * 1024 * 1024  # 20MB upload limit
+app.config["SESSION_COOKIE_DOMAIN"] = ".duckdns.org"
 
 # --- CORS Setup for React Frontend ---
 CORS(app, supports_credentials=True)
@@ -124,6 +125,11 @@ def whoami():
 
 @app.route('/upload', methods=['POST'])
 def upload():
+    if "uuid" not in session:
+        return jsonify({"error": "Not logged in"}), 401
+
+    uuid = session["uuid"]
+    user_type = session.get("user_type", "personal")
     try:
         if 'uuid' not in session:
             return jsonify({"error": "Unauthorized"}), 401
@@ -212,7 +218,11 @@ def upload():
 @app.route('/query', methods=['POST'])
 def query():
     print("🧪 Model from ENV:", os.getenv("AZURE_OPENAI_DEPLOYMENT"))
+    if "uuid" not in session:
+        return jsonify({"error": "Not logged in"}), 401
 
+    uuid = session["uuid"]
+    user_type = session.get("user_type", "personal")
     try:
         data = request.json
         query_text = data.get('query')
