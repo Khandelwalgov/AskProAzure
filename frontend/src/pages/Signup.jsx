@@ -14,7 +14,7 @@ export default function Signup() {
       return;
     }
     try {
-      const res = await fetch("http://98.70.26.63:5000/signup", {
+      const res = await fetch("https://askpro.duckdns.org/signup", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },

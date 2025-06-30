@@ -14,7 +14,7 @@ const Chatbot = () => {
     const newMessage = { role: "user", content: query };
     setMessages((prev) => [...prev, newMessage]);
 
-    const res = await fetch("http://98.70.26.63:5000/query", {
+    const res = await fetch("https://askpro.duckdns.org/query", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ uuid, query }),

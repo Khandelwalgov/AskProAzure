@@ -6,7 +6,7 @@ function Sidebar() {
   const [files, setFiles] = useState([]);
 
   const fetchFiles = async () => {
-    const res = await fetch("http://98.70.26.63:5000/list-files", {
+    const res = await fetch("https://askpro.duckdns.org/list-files", {
       credentials: "include",
     });
     const data = await res.json();
