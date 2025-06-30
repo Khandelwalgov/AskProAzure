@@ -9,7 +9,7 @@ export default function Login() {
 
   const handleLogin = async () => {
     try {
-      const res = await fetch("http://localhost:5000/login", {
+      const res = await fetch("http://98.70.26.63:5000/login", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },

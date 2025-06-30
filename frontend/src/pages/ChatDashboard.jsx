@@ -23,7 +23,7 @@ export default function ChatDashboard() {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/query", {
+      const res = await fetch("http://98.70.26.63:5000/query", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
