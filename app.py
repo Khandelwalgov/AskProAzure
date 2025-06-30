@@ -43,13 +43,18 @@ except Exception:
 # --- Flask App Setup ---
 app = Flask(__name__)
 app.secret_key = 'your_super_secret_key'  # 🔒 Replace with a secure key
-
+# app.config.update(
+#     SESSION_COOKIE_SAMESITE='None',
+#     SESSION_COOKIE_SECURE=True
+# )
 # --- Config ---
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['SQLALCHEMY_DATABASE_URI'] =  os.getenv("SQLALCHEMY_URI")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['MAX_CONTENT_LENGTH'] = 20 * 1024 * 1024  # 20MB upload limit
 app.config["SESSION_COOKIE_DOMAIN"] = ".duckdns.org"
+app.config["SESSION_COOKIE_SAMESITE"] = "None"        # ✅ add this
+app.config["SESSION_COOKIE_SECURE"] = True 
 
 # --- CORS Setup for React Frontend ---
 CORS(app, supports_credentials=True)
