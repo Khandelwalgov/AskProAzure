@@ -94,7 +94,7 @@ class File(db.Model):
 with app.app_context():
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
     db.create_all()
-    
+
 @app.before_request
 def log_request_info():
     logger.info("⬅️ Incoming Request: %s %s", request.method, request.path)
@@ -203,43 +203,6 @@ def upload():
     except Exception as e:
         print("❌ Upload route error:", e)
         return jsonify({"error": str(e)}), 500
-
-# @app.route('/query', methods=['POST'])
-# def query():
-#     data = request.json
-#     query = data.get('query')
-#     uuid_input = data.get('uuid')
-
-#     user = User.query.filter_by(uuid=session['uuid']).first()
-#     if not user:
-#         return jsonify({"error": "Invalid user"}), 400
-
-#     vector_folder = os.path.join('vectors', user.uuid)
-#     if not os.path.exists(vector_folder):
-#         return jsonify({"error": "No vectors found"}), 400
-
-#     results = []
-#     for vec_file in os.listdir(vector_folder):
-#         if vec_file.endswith(".faiss"):
-#             vec_path = os.path.join(vector_folder, vec_file)
-#             try:
-#                 vectordb = load_vector_db(vec_path)
-#                 chunk_tuples = retrieve_chunks(vectordb, query)  # returns list of (Document, score)
-#                 results.extend(chunk_tuples)
-#             except Exception as e:
-#                 print(f"Error loading vector DB from {vec_path}: {e}")
-#                 continue
-
-#     # Sort by score (lower is better with similarity_search_with_score)
-#     results = sorted(results, key=lambda x: x[1])
-
-#     # Extract top 10 contents
-#     top_chunks = [doc.page_content for doc, score in results[:10]]
-#     if vectordb:
-#         del vectordb
-#         gc.collect()
-
-#     return jsonify({"chunks": top_chunks})
 @app.route('/query', methods=['POST'])
 def query():
     print("🧪 Model from ENV:", os.getenv("AZURE_OPENAI_DEPLOYMENT"))
@@ -352,6 +315,8 @@ def serve(path):
         return send_from_directory('frontend/build', path)
     else:
         return send_from_directory('frontend/build', 'index.html')
+from werkzeug.middleware.proxy_fix import ProxyFix
+app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 # --- Run ---
 if __name__ == "__main__":
