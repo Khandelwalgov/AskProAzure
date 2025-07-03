@@ -59,8 +59,13 @@ app.config["SESSION_COOKIE_SAMESITE"] = "None"        # ✅ add this
 app.config["SESSION_COOKIE_SECURE"] = True 
 
 # --- CORS Setup for React Frontend ---
-CORS(app, origins=["https://blue-cliff-0de6c3b00.2.azurestaticapps.net"], supports_credentials=True)
+# CORS(app, origins=["https://blue-cliff-0de6c3b00.2.azurestaticapps.net"], supports_credentials=True)
 # Logging to stdout for systemd (Gunicorn compatible)
+CORS(
+    app,
+    origins=["http://localhost:5173", "https://blue-cliff-0de6c3b00.2.azurestaticapps.net"],
+    supports_credentials=True
+)
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s: %(message)s",
