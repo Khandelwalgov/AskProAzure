@@ -33,6 +33,135 @@ ul {
   color: white;
   padding: 2rem 2rem;
 }
+.form-container {
+  max-width: 420px;
+  margin: 5rem auto;
+  padding: 2.5rem;
+  background: rgba(0, 0, 0, 0.6); /* glass effect */
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(0, 110, 255, 0.4),
+              0 0 40px rgba(255, 0, 255, 0.2);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  z-index: 2;
+}
+
+.form-container h2 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: white;
+}
+
+.form-container input[type="email"],
+.form-container input[type="password"] {
+  width: 100%;
+  padding: 0.75rem;
+  margin: 0.75rem 0;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  font-size: 1rem;
+  outline: none;
+}
+
+.form-container input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.form-container button {
+  width: 100%;
+  padding: 0.9rem;
+  margin-top: 1rem;
+  background: linear-gradient(to right, #006eff, #00c6ff);
+  color: white;
+  font-weight: bold;
+  font-size: 1.05rem;
+  border: none;
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+.form-container button:hover {
+  background: linear-gradient(to right, #005be7, #00b8e6);
+}
+
+.form-container p.error {
+  color: #ff6b6b;
+  margin-top: 0.8rem;
+  text-align: center;
+}
+
+.form-footer {
+  margin-top: 1.2rem;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.form-footer a {
+  color: #00bfff;
+  font-weight: bold;
+  text-decoration: underline;
+}
+.auth-page {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: black; /* fallback bg */
+}
+.auth-card {
+  padding: 2.5rem;
+  max-width: 420px;
+  width: 90%;
+}
+
+.auth-card input[type="email"],
+.auth-card input[type="password"] {
+  width: 100%;
+  padding: 0.75rem;
+  margin: 0.75rem 0;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  font-size: 1rem;
+  outline: none;
+}
+
+.auth-card input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.auth-card button {
+  width: 100%;
+  padding: 0.9rem;
+  margin-top: 1rem;
+  background: linear-gradient(to right, #2207bc, #00c6ff);
+  color: white;
+  font-weight: bold;
+  font-size: 1.05rem;
+  border: none;
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+.auth-card button:hover {
+  background: linear-gradient(to right, #005be7, #00b8e6);
+}
+
+.auth-card .error {
+  color: #ff6b6b;
+  margin-top: 0.8rem;
+  text-align: center;
+}
 
 .iridescence {
   position: absolute;

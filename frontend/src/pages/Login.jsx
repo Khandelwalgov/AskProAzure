@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import Beams from './Beams';
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -28,13 +29,40 @@ export default function Login() {
   };
 
   return (
-    <div className="form-container">
-      <h2>Login</h2>
-      <input placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
-      <input type="password" placeholder="Password" value={pass} onChange={e => setPass(e.target.value)} />
-      <button onClick={handleLogin}>Login</button>
-      <p className="error">{error}</p>
-      <p>New here? <Link to="/signup">Sign Up</Link></p>
+  <div className="auth-page">
+    <div className="iridescence">
+    <Beams
+      beamWidth={1.1}
+      beamHeight={30}
+      beamNumber={50}
+      lightColor="#5266ff"
+      speed={10}
+      noiseIntensity={1.75}
+      scale={0.2}
+      rotation={66}
+    />
     </div>
-  );
+    <div className="glass-card auth-card">
+      <h1 className="glow-title">Welcome Back</h1>
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={e => setEmail(e.target.value)}
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={pass}
+        onChange={e => setPass(e.target.value)}
+      />
+      <button onClick={handleLogin}>Login</button>
+      {error && <p className="error">{error}</p>}
+      <p className="form-footer">
+        New here? <Link to="/signup">Sign Up</Link>
+      </p>
+    </div>
+  </div>
+);
+  
 }

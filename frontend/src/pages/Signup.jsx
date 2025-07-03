@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import Beams from './Beams';
 
 export default function Signup() {
   const [email, setEmail] = useState("");
@@ -9,10 +10,35 @@ export default function Signup() {
   const navigate = useNavigate();
 
   const handleSignup = async () => {
-    if (pass1 !== pass2) {
-      setError("Passwords do not match.");
-      return;
-    }
+    // if (pass1 !== pass2) {
+    //   setError("Passwords do not match.");
+    //   return;
+    // }
+    setError(""); 
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+
+  if (!email || !pass1 || !pass2) {
+    setError("Please fill in all fields.");
+    return;
+  }
+
+  if (!emailRegex.test(email)) {
+    setError("Invalid email format.");
+    return;
+  }
+
+  if (pass1.length < 6) {
+    setError("Password must be at least 6 characters long.");
+    return;
+  }
+
+  if (pass1 !== pass2) {
+    setError("Passwords do not match.");
+    return;
+  }
+
+
     try {
       const res = await fetch("https://askpro.duckdns.org/signup", {
         method: "POST",
@@ -33,14 +59,46 @@ export default function Signup() {
   };
 
   return (
-    <div className="form-container">
-      <h2>Sign Up</h2>
-      <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
-      <input type="password" placeholder="Password" value={pass1} onChange={e => setPass1(e.target.value)} />
-      <input type="password" placeholder="Confirm Password" value={pass2} onChange={e => setPass2(e.target.value)} />
-      <button onClick={handleSignup}>Create Account</button>
-      <p className="error">{error}</p>
-      <p>Already have an account? <Link to="/login">Login</Link></p>
+  <div className="auth-page">
+    <div className="iridescence">
+    <Beams
+      beamWidth={1.1}
+      beamHeight={30}
+      beamNumber={50}
+      lightColor="#5266ff"
+      speed={10}
+      noiseIntensity={1.75}
+      scale={0.2}
+      rotation={66}
+    />
     </div>
-  );
+    <div className="glass-card auth-card">
+      <h1 className="glow-title">Join AskPro</h1>
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={e => setEmail(e.target.value)}
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={pass1}
+        onChange={e => setPass1(e.target.value)}
+      />
+      <input
+        type="password"
+        placeholder="Confirm Password"
+        value={pass2}
+        onChange={e => setPass2(e.target.value)}
+      />
+      <button onClick={handleSignup}>Create Account</button>
+      {error && <p className="error">{error}</p>}
+      <p className="form-footer">
+        Already have an account? <Link to="/login">Login</Link>
+      </p>
+    </div>
+  </div>
+);
+  
 }
