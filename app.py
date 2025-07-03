@@ -54,7 +54,7 @@ app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['SQLALCHEMY_DATABASE_URI'] =  os.getenv("SQLALCHEMY_URI")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['MAX_CONTENT_LENGTH'] = 20 * 1024 * 1024  # 20MB upload limit
-app.config["SESSION_COOKIE_DOMAIN"] = ".duckdns.org"
+app.config["SESSION_COOKIE_DOMAIN"] = "askpro.duckdns.org"
 app.config["SESSION_COOKIE_SAMESITE"] = "None"        # ✅ add this
 app.config["SESSION_COOKIE_SECURE"] = True 
 
