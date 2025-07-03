@@ -48,7 +48,7 @@ function Sidebar() {
   credentials: "include"
 });
 localStorage.removeItem("uuid");
-    window.location.href = "/login";
+    window.location.href = "/";
   };
 
   return (
