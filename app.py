@@ -14,6 +14,9 @@ from dotenv import load_dotenv
 import openai
 from openai import OpenAI, AzureOpenAI
 import logging
+from sqlalchemy import text
+
+
 
 
 
@@ -323,6 +326,13 @@ def serve(path):
 from werkzeug.middleware.proxy_fix import ProxyFix
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
+@app.route('/keep-alive')
+def keep_alive():
+    try:
+        db.session.execute(text("SELECT 1"))
+        return "✅ DB alive", 200
+    except Exception as e:
+        return f"❌ DB error: {str(e)}", 500
 # --- Run ---
 if __name__ == "__main__":
     app.run(debug=True)
