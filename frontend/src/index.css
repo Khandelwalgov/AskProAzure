@@ -321,7 +321,7 @@ ul {
 }
 
 /* Dashboard */
-.dashboard {
+/* .dashboard {
   display: flex;
   height: 100vh;
 }
@@ -361,8 +361,8 @@ ul {
   padding: 0.8rem;
   border-radius: 8px;
   max-width: 60%;
-}
-.msg.user {
+} */
+/* .msg.user {
   text-align: right;
   background-color: #dcf8c6;
   padding: 8px;
@@ -395,7 +395,6 @@ ul {
   border-radius: 4px;
 }
 
-/* File Manager */
 .file-manager {
   padding: 1rem;
 }
@@ -419,4 +418,4 @@ ul {
   color: white;
   border-radius: 4px;
   padding: 0.3rem 0.6rem;
-}
+} */
