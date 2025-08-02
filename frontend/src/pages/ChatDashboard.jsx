@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "../components/Sidebar";
 import "./ChatDashboard.css";
+import ReactMarkdown from 'react-markdown';
+import rehypeSanitize from 'rehype-sanitize';
 
 export default function ChatDashboard() {
   const [messages, setMessages] = useState([]);
@@ -110,7 +112,12 @@ export default function ChatDashboard() {
               key={i}
               className={`chat-msg ${m.role}`}
             >
-              <div className="bubble">{m.content}</div>
+              <div className="bubble">
+                <ReactMarkdown rehypePlugins={[rehypeSanitize]}>
+                  {m.content}
+                </ReactMarkdown>
+
+                </div>
             </div>
           ))}
         </div>

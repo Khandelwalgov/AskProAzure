@@ -264,7 +264,7 @@ def query():
             model=os.getenv("AZURE_OPENAI_DEPLOYMENT"),  
             messages=messages,
             temperature=0.2,
-            max_tokens=500
+            max_tokens=8192
         )
 
         answer = response.choices[0].message.content.strip()
