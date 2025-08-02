@@ -3,7 +3,7 @@
     {
       "route": "/api/*",
       "proxy": {
-        "backendUri": "https://askpro.duckdns.org/*"
+        "backendUri": "https://askpro.duckdns.org*"
       }
     }
   ]
