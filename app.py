@@ -62,6 +62,7 @@ app.config['MAX_CONTENT_LENGTH'] = 20 * 1024 * 1024  # 20MB upload limit
 app.config["SESSION_COOKIE_DOMAIN"] = "askpro.duckdns.org"
 app.config["SESSION_COOKIE_SAMESITE"] = "None"        # ✅ add this
 app.config["SESSION_COOKIE_SECURE"] = True 
+app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # 50 MB
 
 # --- CORS Setup for React Frontend ---
 # CORS(app, origins=["https://blue-cliff-0de6c3b00.2.azurestaticapps.net"], supports_credentials=True)
