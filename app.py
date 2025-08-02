@@ -9,12 +9,14 @@ from parser_utils import extract_text
 from rag_utils import load_vector_db, retrieve_chunks, chunk_and_store
 import shutil
 import gc
-from azure.storage.blob import BlobServiceClient, ContentSettings
+from azure.storage.blob import BlobServiceClient, ContentSettings, generate_blob_sas, BlobSasPermissions
 from dotenv import load_dotenv
 import openai
 from openai import OpenAI, AzureOpenAI
 import logging
 from sqlalchemy import text
+from datetime import datetime, timedelta
+
 
 
 
@@ -164,21 +166,34 @@ def upload():
     uuid = session["uuid"]
     user_type = session.get("user_type", "personal")
     try:
-        if 'uuid' not in session:
-            return jsonify({"error": "Unauthorized"}), 401
-
         user = User.query.filter_by(uuid=session['uuid']).first()
         file = request.files.get('file')
         if not user or not file:
             return jsonify({"error": "Unauthorized or file missing"}), 400
 
+        # 🔒 Check file count limit
+        file_count = File.query.filter_by(user_id=user.id).count()
+        max_allowed = 30 if user.is_org else 10
+        if file_count >= max_allowed:
+            return jsonify({"error": f"Upload limit exceeded. Max allowed: {max_allowed} files."}), 403
+
+        # 🔒 Check file size limit (25MB)
+        file.seek(0, os.SEEK_END)
+        file_size_mb = file.tell() / (1024 * 1024)
+        file.seek(0)
+        if file_size_mb > 25:
+            return jsonify({"error": "File exceeds 25MB limit"}), 400
+
+        # ✅ Check type
         mimetype = file.mimetype
         if not allowed_file(file.filename, mimetype):
             return jsonify({"error": "Invalid file type"}), 400
 
         filename = werkzeug.utils.secure_filename(file.filename)
-        blob_path = f"{user.uuid}/{filename}"
+        unique_suffix = uuid.uuid4().hex[:8]
+        blob_path = f"{user.uuid}/{unique_suffix}_{filename}"
 
+        # ☁️ Upload to Azure Blob
         try:
             container_client.upload_blob(
                 name=blob_path,
@@ -190,10 +205,11 @@ def upload():
             print(f"Failed to upload to Blob Storage: {str(e)}")
             return jsonify({"error": f"Failed to upload to Blob Storage: {str(e)}"}), 500
 
+        # 🗃️ Save metadata to DB
         db.session.add(File(filename=filename, path=blob_path, mimetype=mimetype, user_id=user.id))
         db.session.commit()
 
-        # TEMP: Save locally for processing
+        # 🧠 Process locally
         os.makedirs("temp", exist_ok=True)
         local_temp_path = os.path.join("temp", filename)
         file.seek(0)
@@ -204,10 +220,11 @@ def upload():
         vector_folder = os.path.join('vectors', user.uuid)
         vector_path = os.path.join(vector_folder, f"{filename}.faiss")
         chunk_and_store(extracted_text, vector_path, metadata={"filename": filename})
-        print("Extracted text:", extracted_text[:500])  # dev check
+        # print("Extracted text:", extracted_text[:500])  # dev check
 
         os.remove(local_temp_path)
         return jsonify({"message": "Upload successful"})
+    
     except Exception as e:
         print("❌ Upload route error:", e)
         return jsonify({"error": str(e)}), 500
@@ -281,7 +298,8 @@ def list_files():
         return jsonify({"error": "Unauthorized"}), 401
     user = User.query.filter_by(uuid=session['uuid']).first()
     files = File.query.filter_by(user_id=user.id).all()
-    return jsonify([f.filename for f in files])
+    return jsonify([{"id": f.id, "filename": f.filename} for f in files])
+
 
 @app.route('/delete-file', methods=['POST'])
 def delete_file():
@@ -289,21 +307,24 @@ def delete_file():
         return jsonify({"error": "Unauthorized"}), 401
 
     data = request.json
+    file_id = data.get("file_id")
     user = User.query.filter_by(uuid=session['uuid']).first()
-    file = File.query.filter_by(filename=data['filename'], user_id=user.id).first()
+    file = File.query.filter_by(id=file_id, user_id=user.id).first()
     if not file:
         return jsonify({"error": "File not found"}), 404
 
     try:
         # 1. Delete file from Azure Blob Storage
         container_client.delete_blob(file.path)
-        print(f"[✓] Deleted blob: {file.path}")
+        # print(f"[✓] Deleted blob: {file.path}")
 
         # 2. Delete vector index
-        vector_folder = os.path.join('vectors', user.uuid, f"{file.filename}.faiss")
-        if os.path.exists(vector_folder):
-            shutil.rmtree(vector_folder)
-            print(f"[✓] Deleted vector folder: {vector_folder}")
+        vector_folder = os.path.join('vectors', user.uuid)
+        vector_file = os.path.join(vector_folder, f"{os.path.basename(file.path)}.faiss")
+
+        if os.path.exists(vector_file):
+            shutil.rmtree(vector_file)
+            # print(f"[✓] Deleted vector folder: {vector_file}")
 
         # 3. Clean from DB
         db.session.delete(file)
@@ -333,6 +354,28 @@ def keep_alive():
         return "✅ DB alive", 200
     except Exception as e:
         return f"❌ DB error: {str(e)}", 500
+
+@app.route("/view-file/<int:file_id>")
+def view_file(file_id):
+    if "uuid" not in session:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    user = User.query.filter_by(uuid=session["uuid"]).first()
+    file = File.query.filter_by(id=file_id, user_id=user.id).first()
+    if not file:
+        return jsonify({"error": "File not found"}), 404
+
+    sas_token = generate_blob_sas(
+        account_name=blob_service_client.account_name,
+        container_name=AZURE_CONTAINER_NAME,
+        blob_name=file.path,
+        account_key=os.getenv("AZURE_STORAGE_ACCOUNT_KEY"),
+        permission=BlobSasPermissions(read=True),
+        expiry=datetime.utcnow() + timedelta(minutes=15)
+    )
+    blob_url = f"https://{blob_service_client.account_name}.blob.core.windows.net/{AZURE_CONTAINER_NAME}/{file.path}?{sas_token}"
+    return jsonify({"url": blob_url})
+
 # --- Run ---
 if __name__ == "__main__":
     app.run(debug=True)
