@@ -163,7 +163,7 @@ def upload():
     if "uuid" not in session:
         return jsonify({"error": "Not logged in"}), 401
 
-    uuid = session["uuid"]
+    user_uuid = session["uuid"]
     user_type = session.get("user_type", "personal")
     try:
         user = User.query.filter_by(uuid=session['uuid']).first()
