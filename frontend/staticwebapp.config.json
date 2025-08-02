@@ -1,10 +1,16 @@
 {
-  "routes": [
-    {
-      "route": "/api/*",
-      "proxy": {
-        "backendUri": "https://askpro.duckdns.org*"
-      }
-    }
-  ]
+ "routes": [
+  {
+   "route": "/api/*",
+   "rewrite": "/:path*",
+   "proxy": {
+    "backendUri": "https://askpro.duckdns.org"
+   }
+  },
+  {
+   "route": "/*",
+   "serve": "/index.html",
+   "statusCode": 200
+  }
+ ]
 }

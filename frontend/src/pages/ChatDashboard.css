@@ -337,41 +337,6 @@ body {
 ===== NEW: RESPONSIVE STYLES    =====
 =====================================
 */
-@media (max-width: 850px) {
-  .dashboard-container {
-    /* On mobile, main chat takes full width and sidebar overlays */
-    margin-left: 0;
-  }
-
-  .sidebar {
-    position: absolute;
-    height: 100%;
-    z-index: 1000;
-    /* By default, sidebar is hidden off-screen */
-    transform: translateX(-100%);
-  }
-
-  .sidebar.open {
-    /* The 'open' class slides it into view */
-    transform: translateX(0);
-  }
-
-  /* Adjust padding on mobile */
-  .chat-header,
-  .chat-log,
-  .chat-input {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-
-  .logo {
-    font-size: 1.4rem; /* Smaller logo on phones */
-  }
-
-  .chat-msg {
-    max-width: 90%; /* Messages can be wider */
-  }
-}
 .toggle-btn {
   /* MODIFIED: Reduced padding for a smaller, square button */
   padding: 0.5rem; 
@@ -450,4 +415,50 @@ body {
   font-size: 1.5rem;
   font-weight: bold;
   line-height: 1;
+}
+
+
+
+
+
+
+@media (max-width: 850px) {
+
+  /* 1. Show the hamburger toggle button on mobile */
+  .toggle-btn {
+    display: block; /* Or 'flex' if it needs to align an icon */
+  }
+
+  /* 2. Convert the sidebar to a mobile overlay */
+  .sidebar {
+    position: absolute;
+    height: 100%;
+    z-index: 1000;
+    
+    /* --- CRITICAL FIX --- */
+    /* Reset the desktop margin and use transform for hiding/showing */
+    margin-left: 0; 
+    transform: translateX(-100%); 
+  }
+
+  /* 3. This rule for the 'open' state is perfect, it stays the same */
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* 4. Adjust padding and fonts for smaller screens */
+  .chat-header,
+  .chat-log,
+  .chat-input {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .logo {
+    font-size: 1.4rem;
+  }
+
+  .chat-msg {
+    max-width: 90%;
+  }
 }
