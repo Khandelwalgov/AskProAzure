@@ -40,7 +40,7 @@ export default function Signup() {
 
 
     try {
-      const res = await fetch("/api/signup", {
+      const res = await fetch("https://askpro.duckdns.org/signup", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },

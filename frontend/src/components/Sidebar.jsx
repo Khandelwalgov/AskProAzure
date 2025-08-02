@@ -8,7 +8,7 @@ function Sidebar({ className }) {
   const fileInputRef = useRef(null);
 
   const fetchFiles = async () => {
-    const res = await fetch("/api/list-files", {
+    const res = await fetch("https://askpro.duckdns.org/list-files", {
       credentials: "include",
     });
     const data = await res.json();
@@ -38,7 +38,7 @@ function Sidebar({ className }) {
   formData.append("file", fileToUpload);
 
   try {
-    const res = await fetch("/api/upload", {
+    const res = await fetch("https://askpro.duckdns.org/upload", {
       method: "POST",
       credentials: "include",
       body: formData,
@@ -62,7 +62,7 @@ function Sidebar({ className }) {
 
 
   const handleDelete = async (fileId) => {
-    const res = await fetch("/api/delete-file", {
+    const res = await fetch("https://askpro.duckdns.org/delete-file", {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -72,7 +72,7 @@ function Sidebar({ className }) {
   };
 
   const handleLogout = async () => {
-    await fetch("/api/logout", {
+    await fetch("https://askpro.duckdns.org/logout", {
       method: "POST",
       credentials: "include"
     });
@@ -80,7 +80,7 @@ function Sidebar({ className }) {
     window.location.href = "/";
   };
 const handleView = async (fileId) => {
-  const res = await fetch(`/api/view-file/${fileId}`, {
+  const res = await fetch(`https://askpro.duckdns.org/view-file/${fileId}`, {
     credentials: "include",
   });
   const data = await res.json();

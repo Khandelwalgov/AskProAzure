@@ -10,7 +10,7 @@ export default function Login() {
 
   const handleLogin = async () => {
     try {
-      const res = await fetch("/api/login", {
+      const res = await fetch("https://askpro.duckdns.org/login", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
