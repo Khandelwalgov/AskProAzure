@@ -5,7 +5,7 @@ export default function FileManager() {
   const [uploading, setUploading] = useState(false);
 
   const fetchFiles = async () => {
-    const res = await fetch("https://askpro.duckdns.org/list-files", {
+    const res = await fetch("/api/list-files", {
       credentials: "include"
     });
     const data = await res.json();
@@ -32,7 +32,7 @@ export default function FileManager() {
     const form = new FormData();
     form.append("file", file);
     setUploading(true);
-    await fetch("https://askpro.duckdns.org/upload", {
+    await fetch("/api/upload", {
       method: "POST",
       credentials: "include",
       body: form
@@ -42,7 +42,7 @@ export default function FileManager() {
   };
 
   const handleDelete = async fn => {
-    await fetch("https://askpro.duckdns.org/delete-file", {
+    await fetch("/api/delete-file", {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },

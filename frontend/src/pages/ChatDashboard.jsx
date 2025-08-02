@@ -26,7 +26,7 @@ export default function ChatDashboard() {
     }
 
     try {
-      const res = await fetch("https://askpro.duckdns.org/query", {
+      const res = await fetch("/api/query", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
