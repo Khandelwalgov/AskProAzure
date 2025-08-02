@@ -408,3 +408,46 @@ body {
   border-radius: 4px;
   font-family: monospace;
 }
+.file-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* Adds a small space between the buttons */
+}
+
+.view-btn,
+.delete-btn {
+  /* Common styles for both buttons */
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: var(--transition);
+  opacity: 0.6; /* Slightly visible by default */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+}
+
+/* MODIFIED: Make both buttons appear on hover */
+.file-row:hover .view-btn,
+.file-row:hover .delete-btn {
+  opacity: 1;
+}
+
+/* NEW: Add a hover color for the view button */
+.view-btn:hover {
+  color: var(--accent-blue); /* Changes to blue on hover */
+}
+
+/* Your existing .delete-btn:hover rule will continue to work */
+.delete-btn:hover {
+  color: var(--accent-red);
+}
+
+/* MODIFIED: Adjust original delete-btn to use shared styles */
+.delete-btn {
+  font-size: 1.5rem;
+  font-weight: bold;
+  line-height: 1;
+}

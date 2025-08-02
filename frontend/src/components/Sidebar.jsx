@@ -114,13 +114,31 @@ const handleView = async (fileId) => {
             files.map((file, i) => (
               <div key={file.id} className="file-row">
                 <span className="file-name">{file.filename}</span>
-                <button onClick={() => handleView(file.id)} className="view-btn">👁️</button>
-                <button
-                  onClick={() => handleDelete(file.id)}
-                  className="delete-btn"
-                >
-                  &times;
-                </button>
+                <div className="file-actions">
+          <button onClick={() => handleView(file.id)} className="view-btn">
+            {/* NEW: SVG Eye Icon */}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </button>
+          <button
+            onClick={() => handleDelete(file.id)}
+            className="delete-btn"
+          >
+            &times;
+          </button>
+        </div>
               </div>
             ))
           )}
