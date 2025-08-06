@@ -52,5 +52,5 @@ def load_vector_db(path):
 # def retrieve_chunks(vector_db, query, k=10):
 #     results = vector_db.similarity_search(query, k=k)
 #     return [doc.page_content for doc in results]
-def retrieve_chunks(vectordb: FAISS, query: str, k: int = 10):
+def retrieve_chunks(vectordb: FAISS, query: str, k: int = 25):
     return vectordb.similarity_search_with_score(query, k=k)

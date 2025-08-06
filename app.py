@@ -56,7 +56,7 @@ app.secret_key = 'your_super_secret_key'  # 🔒 Replace with a secure key
 # )
 # --- Config ---
 app.config['UPLOAD_FOLDER'] = 'uploads'
-app.config['SQLALCHEMY_DATABASE_URI'] =  os.getenv("SQLALCHEMY_URI")
+app.config['SQLALCHEMY_DATABASE_URI'] =  os.getenv("SQLALCHEMY_DATABASE_URI")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['MAX_CONTENT_LENGTH'] = 20 * 1024 * 1024  # 20MB upload limit
 app.config["SESSION_COOKIE_DOMAIN"] = "askpro.duckdns.org"
@@ -218,7 +218,7 @@ def upload():
             f.write(file.read())
 
         extracted_text = extract_text(local_temp_path, mimetype)
-        vector_folder = os.path.join('vectors', user.uuid)
+        vector_folder = os.path.join('/mnt/data/vectors', user.uuid)
         vector_path = os.path.join(vector_folder, f"{filename}.faiss")
         chunk_and_store(extracted_text, vector_path, metadata={"filename": filename})
         # print("Extracted text:", extracted_text[:500])  # dev check
@@ -245,7 +245,8 @@ def query():
         if not user:
             return jsonify({"error": "Invalid user"}), 400
 
-        vector_folder = os.path.join('vectors', user.uuid)
+        vector_folder = os.path.join('/mnt/data/vectors', user.uuid)
+
         if not os.path.exists(vector_folder):
             return jsonify({"error": "No vectors found"}), 400
 
@@ -320,7 +321,7 @@ def delete_file():
         # print(f"[✓] Deleted blob: {file.path}")
 
         # 2. Delete vector index
-        vector_folder = os.path.join('vectors', user.uuid)
+        vector_folder = os.path.join('/mnt/data/vectors', user.uuid)
         vector_file = os.path.join(vector_folder, f"{os.path.basename(file.path)}.faiss")
 
         if os.path.exists(vector_file):
