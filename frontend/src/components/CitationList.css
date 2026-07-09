@@ -1,0 +1,80 @@
+﻿.citation-list {
+  margin-top: 0.85rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.citation-list-title {
+  color: #8b949e;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.citation-card {
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  background: rgba(13, 17, 23, 0.72);
+  overflow: hidden;
+}
+
+.citation-card summary {
+  min-height: 2.25rem;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.45rem 0.6rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.citation-card summary::-webkit-details-marker {
+  display: none;
+}
+
+.citation-id {
+  color: #58a6ff;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.citation-name {
+  color: #c9d1d9;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.86rem;
+}
+
+.citation-score {
+  color: #8b949e;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.78rem;
+}
+
+.citation-snippet {
+  margin: 0;
+  padding: 0.2rem 0.65rem 0.7rem;
+  color: #b8c2cc;
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+.citation-terms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding: 0 0.65rem 0.7rem;
+}
+
+.citation-terms span {
+  color: #c9d1d9;
+  border: 1px solid #30363d;
+  border-radius: 999px;
+  padding: 0.12rem 0.45rem;
+  font-size: 0.74rem;
+  background: #161b22;
+}

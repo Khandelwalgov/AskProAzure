@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Beams from './Beams';
+import { apiUrl } from "../api";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
   const [pass1, setPass1] = useState("");
   const [pass2, setPass2] = useState("");
   const [error, setError] = useState("");
+  const [isOrg, setIsOrg] = useState(false);
   const navigate = useNavigate();
 
   const handleSignup = async () => {
@@ -40,11 +42,11 @@ export default function Signup() {
 
 
     try {
-      const res = await fetch("https://askpro.duckdns.org/signup", {
+      const res = await fetch(apiUrl("/signup"), {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password: pass1, is_organization: false }),
+        body: JSON.stringify({ email, password: pass1, is_organization: isOrg }),
       });
       const data = await res.json();
       if (res.ok) {
@@ -53,7 +55,7 @@ export default function Signup() {
       } else {
         setError(data.error || "Signup failed.");
       }
-    } catch (e) {
+    } catch {
       setError("Network error");
     }
   };
@@ -92,6 +94,14 @@ export default function Signup() {
         value={pass2}
         onChange={e => setPass2(e.target.value)}
       />
+      <label className="auth-check">
+        <input
+          type="checkbox"
+          checked={isOrg}
+          onChange={e => setIsOrg(e.target.checked)}
+        />
+        Organization account
+      </label>
       <button onClick={handleSignup}>Create Account</button>
       {error && <p className="error">{error}</p>}
       <p className="form-footer">

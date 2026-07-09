@@ -1,6 +1,6 @@
-// src/components/Sidebar.jsx
-import React, { useEffect, useState, useRef } from 'react';
-import "../pages/ChatDashboard.css"; // We will use the main CSS file
+import React, { useEffect, useRef, useState } from "react";
+import { apiUrl } from "../api";
+import "../pages/ChatDashboard.css";
 
 function Sidebar({ className }) {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -8,7 +8,7 @@ function Sidebar({ className }) {
   const fileInputRef = useRef(null);
 
   const fetchFiles = async () => {
-    const res = await fetch("https://askpro.duckdns.org/list-files", {
+    const res = await fetch(apiUrl("/list-files"), {
       credentials: "include",
     });
     const data = await res.json();
@@ -23,46 +23,44 @@ function Sidebar({ className }) {
     fetchFiles();
   }, []);
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
     if (file) {
       setSelectedFile(file);
-      // Automatically trigger upload when a file is selected
       handleUpload(file);
     }
   };
 
   const handleUpload = async (fileToUpload) => {
-  if (!fileToUpload) return;
-  const formData = new FormData();
-  formData.append("file", fileToUpload);
+    if (!fileToUpload) return;
 
-  try {
-    const res = await fetch("https://askpro.duckdns.org/upload", {
-      method: "POST",
-      credentials: "include",
-      body: formData,
-    });
+    const formData = new FormData();
+    formData.append("file", fileToUpload);
 
-    const data = await res.json();
-    if (!res.ok) {
-      alert(data.error || "Upload failed");
-    } else {
-      await fetchFiles();
+    try {
+      const res = await fetch(apiUrl("/upload"), {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || "Upload failed");
+      } else {
+        await fetchFiles();
+      }
+    } catch (err) {
+      alert("Something went wrong during upload.");
+      console.error("Upload error:", err);
+    } finally {
+      setSelectedFile(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
     }
-  } catch (err) {
-    alert("Something went wrong during upload.");
-    console.error("Upload error:", err);
-  } finally {
-    // ✅ Always reset after upload attempt
-    setSelectedFile(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
-  }
-};
-
+  };
 
   const handleDelete = async (fileId) => {
-    const res = await fetch("https://askpro.duckdns.org/delete-file", {
+    const res = await fetch(apiUrl("/delete-file"), {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -72,29 +70,30 @@ function Sidebar({ className }) {
   };
 
   const handleLogout = async () => {
-    await fetch("https://askpro.duckdns.org/logout", {
+    await fetch(apiUrl("/logout"), {
       method: "POST",
-      credentials: "include"
+      credentials: "include",
     });
     localStorage.removeItem("uuid");
     window.location.href = "/";
   };
-const handleView = async (fileId) => {
-  const res = await fetch(`https://askpro.duckdns.org/view-file/${fileId}`, {
-    credentials: "include",
-  });
-  const data = await res.json();
-  if (res.ok && data.url) {
-    window.open(data.url, "_blank");
-  } else {
-    alert("Failed to load file.");
-  }
-};
+
+  const handleView = async (fileId) => {
+    const res = await fetch(apiUrl(`/view-file/${fileId}`), {
+      credentials: "include",
+    });
+    const data = await res.json();
+    if (res.ok && data.url) {
+      window.open(data.url, "_blank");
+    } else {
+      alert("Failed to load file.");
+    }
+  };
 
   return (
     <div className={`sidebar ${className}`}>
       <div>
-        <h2 className="sidebar-heading">📁 Your Files</h2>
+        <h2 className="sidebar-heading">Your Files</h2>
         <div className="upload-section">
           <input
             type="file"
@@ -111,34 +110,33 @@ const handleView = async (fileId) => {
           {files.length === 0 ? (
             <p className="empty-msg">No files uploaded yet.</p>
           ) : (
-            files.map((file, i) => (
+            files.map((file) => (
               <div key={file.id} className="file-row">
                 <span className="file-name">{file.filename}</span>
                 <div className="file-actions">
-          <button onClick={() => handleView(file.id)} className="view-btn">
-            {/* NEW: SVG Eye Icon */}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-              <circle cx="12" cy="12" r="3"></circle>
-            </svg>
-          </button>
-          <button
-            onClick={() => handleDelete(file.id)}
-            className="delete-btn"
-          >
-            &times;
-          </button>
-        </div>
+                  <button onClick={() => handleView(file.id)} className="view-btn">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() => handleDelete(file.id)}
+                    className="delete-btn"
+                  >
+                    &times;
+                  </button>
+                </div>
               </div>
             ))
           )}

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Beams from './Beams';
+import { apiUrl } from "../api";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -10,7 +11,7 @@ export default function Login() {
 
   const handleLogin = async () => {
     try {
-      const res = await fetch("https://askpro.duckdns.org/login", {
+      const res = await fetch(apiUrl("/login"), {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
@@ -23,7 +24,7 @@ export default function Login() {
       } else {
         setError(data.error || "Login failed.");
       }
-    } catch (e) {
+    } catch {
       setError("Network error");
     }
   };

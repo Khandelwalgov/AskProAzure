@@ -419,3 +419,17 @@ ul {
   border-radius: 4px;
   padding: 0.3rem 0.6rem;
 } */
+
+.auth-check {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0.75rem 0 0.25rem;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 0.95rem;
+}
+
+.auth-check input {
+  width: auto;
+  accent-color: #5266ff;
+}

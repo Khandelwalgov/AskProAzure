@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import FileManager from "../components/FileManager";
+import { apiUrl } from "../api";
 
 const Chatbot = () => {
   const [query, setQuery] = useState("");
@@ -14,14 +15,15 @@ const Chatbot = () => {
     const newMessage = { role: "user", content: query };
     setMessages((prev) => [...prev, newMessage]);
 
-    const res = await fetch("https://askpro.duckdns.org/query", {
+    const res = await fetch(apiUrl("/query"), {
       method: "POST",
+      credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ uuid, query }),
     });
 
     const data = await res.json();
-    setMessages((prev) => [...prev, { role: "bot", content: data.response || "No response." }]);
+    setMessages((prev) => [...prev, { role: "bot", content: data.answer || "No response." }]);
     setQuery("");
   };
 

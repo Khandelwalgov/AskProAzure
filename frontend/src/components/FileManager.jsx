@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { apiUrl } from "../api";
 
 export default function FileManager() {
   const [files, setFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
 
   const fetchFiles = async () => {
-    const res = await fetch("https://askpro.duckdns.org/list-files", {
+    const res = await fetch(apiUrl("/list-files"), {
       credentials: "include"
     });
     const data = await res.json();
@@ -32,7 +33,7 @@ export default function FileManager() {
     const form = new FormData();
     form.append("file", file);
     setUploading(true);
-    await fetch("https://askpro.duckdns.org/upload", {
+    await fetch(apiUrl("/upload"), {
       method: "POST",
       credentials: "include",
       body: form
@@ -41,12 +42,12 @@ export default function FileManager() {
     fetchFiles();
   };
 
-  const handleDelete = async fn => {
-    await fetch("https://askpro.duckdns.org/delete-file", {
+  const handleDelete = async fileId => {
+    await fetch(apiUrl("/delete-file"), {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ filename: fn })
+      body: JSON.stringify({ file_id: fileId })
     });
     fetchFiles();
   };
@@ -57,10 +58,10 @@ export default function FileManager() {
       <input type="file" onChange={handleUpload} />
       {uploading && <p>Uploading...</p>}
       <ul>
-        {files.map((fn, i) => (
-          <li key={i}>
-            {fn}
-            <button onClick={() => handleDelete(fn)}>Delete</button>
+        {files.map((file) => (
+          <li key={file.id}>
+            {file.filename}
+            <button onClick={() => handleDelete(file.id)}>Delete</button>
           </li>
         ))}
       </ul>

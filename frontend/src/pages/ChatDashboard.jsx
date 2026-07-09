@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+﻿import React, { useEffect, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import rehypeSanitize from "rehype-sanitize";
 import Sidebar from "../components/Sidebar";
+import CitationList from "../components/CitationList";
+import { apiUrl } from "../api";
 import "./ChatDashboard.css";
-import ReactMarkdown from 'react-markdown';
-import rehypeSanitize from 'rehype-sanitize';
 
 export default function ChatDashboard() {
   const [messages, setMessages] = useState([]);
@@ -11,43 +13,50 @@ export default function ChatDashboard() {
   const logRef = useRef();
 
   const sendQuery = async () => {
-    if (!query.trim()) return;
+    const question = query.trim();
+    if (!question) return;
 
-    setMessages(prev => [...prev, { role: "user", content: query }]);
+    setMessages((prev) => [...prev, { role: "user", content: question }]);
     setQuery("");
 
     const uuid = localStorage.getItem("uuid");
     if (!uuid) {
-      setMessages(prev => [...prev, {
-        role: "bot",
-        content: "⚠️ No user UUID found. Please log in again."
-      }]);
+      setMessages((prev) => [
+        ...prev,
+        { role: "bot", content: "No user UUID found. Please log in again." },
+      ]);
       return;
     }
 
     try {
-      const res = await fetch("https://askpro.duckdns.org/query", {
+      const res = await fetch(apiUrl("/query"), {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query, uuid })
+        body: JSON.stringify({ query: question, uuid }),
       });
 
       const data = await res.json();
 
       if (data.error) {
-        setMessages(prev => [...prev, { role: "bot", content: `❌ ${data.error}` }]);
+        setMessages((prev) => [...prev, { role: "bot", content: data.error }]);
         return;
       }
 
-      const answer = data.answer?.trim() || "⚠️ No answer generated.";
-      setMessages(prev => [...prev, { role: "bot", content: answer }]);
-
-    } catch (err) {
-      setMessages(prev => [...prev, {
-        role: "bot",
-        content: "❌ Network or server error. Try again later."
-      }]);
+      const answer = data.answer?.trim() || "No answer generated.";
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "bot",
+          content: answer,
+          citations: data.citations || data.sources || [],
+        },
+      ]);
+    } catch {
+      setMessages((prev) => [
+        ...prev,
+        { role: "bot", content: "Network or server error. Try again later." },
+      ]);
     }
   };
 
@@ -63,61 +72,55 @@ export default function ChatDashboard() {
 
       <div className={`main-chat ${sidebarOpen ? "sidebar-open" : ""}`}>
         <div className="chat-header">
-          
-            {/* {sidebarOpen ? "⬅" : "➡"} */}
-            <button className="toggle-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>
-  {sidebarOpen ? (
-    // "X" icon (Size 20x20)
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <line x1="18" y1="6" x2="6" y2="18"></line>
-      <line x1="6" y1="6" x2="18" y2="18"></line>
-    </svg>
-  ) : (
-    // Hamburger icon (Size 20x20)
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <line x1="3" y1="12" x2="21" y2="12"></line>
-      <line x1="3" y1="6" x2="21" y2="6"></line>
-      <line x1="3" y1="18" x2="21" y2="18"></line>
-    </svg>
-  )}
-</button>
+          <button className="toggle-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>
+            {sidebarOpen ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+              </svg>
+            )}
+          </button>
 
-          
-          <h1 className="logo">AskPro<span>.AI</span></h1>
+          <h1 className="logo">
+            AskPro<span>.AI</span>
+          </h1>
         </div>
 
         <div className="chat-log" ref={logRef}>
-          {messages.map((m, i) => (
-            <div
-              key={i}
-              className={`chat-msg ${m.role}`}
-            >
+          {messages.map((message, index) => (
+            <div key={`${message.role}-${index}`} className={`chat-msg ${message.role}`}>
               <div className="bubble">
-                <ReactMarkdown rehypePlugins={[rehypeSanitize]}>
-                  {m.content}
-                </ReactMarkdown>
-
-                </div>
+                <ReactMarkdown rehypePlugins={[rehypeSanitize]}>{message.content}</ReactMarkdown>
+                <CitationList citations={message.citations} />
+              </div>
             </div>
           ))}
         </div>
@@ -125,8 +128,8 @@ export default function ChatDashboard() {
         <div className="chat-input">
           <input
             value={query}
-            onChange={e => setQuery(e.target.value)}
-            onKeyDown={e => e.key === "Enter" && sendQuery()}
+            onChange={(event) => setQuery(event.target.value)}
+            onKeyDown={(event) => event.key === "Enter" && sendQuery()}
             placeholder="Ask something..."
           />
           <button onClick={sendQuery}>Send</button>

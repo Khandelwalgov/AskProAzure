@@ -1,0 +1,253 @@
+.admin-shell {
+  min-height: 100vh;
+  width: 100vw;
+  overflow: auto;
+  background: #0d1117;
+  color: #c9d1d9;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.admin-centered {
+  display: grid;
+  place-items: center;
+}
+
+.admin-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #30363d;
+  background: #161b22;
+}
+
+.admin-topbar h1,
+.admin-panel h1,
+.admin-panel h2 {
+  color: #f0f6fc;
+  margin: 0;
+  letter-spacing: 0;
+}
+
+.admin-topbar h1 {
+  font-size: 1.35rem;
+}
+
+.admin-topbar p,
+.muted {
+  color: #8b949e;
+  margin: 0.25rem 0 0;
+}
+
+.admin-actions,
+.panel-heading,
+.copy-row,
+.admin-file-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.admin-actions,
+.panel-heading,
+.admin-file-row {
+  justify-content: space-between;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.8fr) minmax(360px, 1.2fr);
+  gap: 1rem;
+  padding: 1rem;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.admin-panel {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.admin-panel.narrow {
+  width: min(420px, calc(100vw - 2rem));
+}
+
+.prompt-panel textarea {
+  width: 100%;
+  min-height: 240px;
+  margin-top: 1rem;
+  resize: vertical;
+  background: #0d1117;
+  color: #f0f6fc;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 0.9rem;
+  line-height: 1.5;
+  outline: none;
+}
+
+.integration-panel,
+.link-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.integration-panel label {
+  color: #8b949e;
+  font-size: 0.9rem;
+}
+
+.copy-row {
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 0.55rem;
+}
+
+.copy-row code {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #f0f6fc;
+}
+
+.copy-row.wide code {
+  white-space: normal;
+  word-break: break-all;
+}
+
+.admin-file-list {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.admin-file-row {
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 0.7rem;
+  background: #0d1117;
+}
+
+.admin-file-row span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-upload-btn input {
+  display: none;
+}
+
+button,
+.admin-upload-btn {
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  background: #21262d;
+  color: #f0f6fc;
+  padding: 0.55rem 0.8rem;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+button:hover,
+.admin-upload-btn:hover {
+  border-color: #2f81f7;
+}
+
+.admin-status {
+  color: #7ee787;
+  font-size: 0.92rem;
+}
+
+.admin-error {
+  color: #ff7b72;
+  margin-top: 0.8rem;
+}
+
+.admin-error.full {
+  max-width: 1280px;
+  margin: 1rem auto 0;
+  padding: 0 1rem;
+}
+
+pre {
+  margin: 0;
+  overflow: auto;
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 0.9rem;
+  color: #c9d1d9;
+  line-height: 1.45;
+}
+
+@media (max-width: 900px) {
+  .admin-topbar,
+  .panel-heading,
+  .copy-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+.settings-panel,
+.prompt-panel,
+.integration-panel,
+.link-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.settings-panel label,
+.integration-panel label,
+.link-panel label {
+  color: #8b949e;
+  font-size: 0.9rem;
+}
+
+.admin-text-input,
+.admin-small-textarea {
+  width: 100%;
+  background: #0d1117;
+  color: #f0f6fc;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 0.75rem 0.85rem;
+  outline: none;
+}
+
+.admin-small-textarea {
+  min-height: 92px;
+  resize: vertical;
+  line-height: 1.45;
+}
+
+.admin-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: #c9d1d9 !important;
+}
+
+.admin-toggle input {
+  accent-color: #2f81f7;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
